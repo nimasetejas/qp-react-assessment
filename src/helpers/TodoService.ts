@@ -1,7 +1,7 @@
 import { ITodo } from "./Types";
 
-//const mainUrl = "http://localhost:3031/todos";
-const mainUrl="https://nimasetejas.github.io/json_api/db.json";
+const mainUrl = "http://localhost:3031/todos";
+//const mainUrl="https://nimasetejas.github.io/json_api/db.json";
 
 export const fetchTodos = async () => {
   try {
