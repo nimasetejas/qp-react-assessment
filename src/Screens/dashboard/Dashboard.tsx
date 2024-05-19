@@ -19,7 +19,13 @@ import { Pagination } from "../../Components/todos/Pagination";
 import { setFilteredTodos, setTodos } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 
-export const Dashboard: React.FC = () => {
+interface DashboardProps {
+  deleteTodo?:any,
+  todos?:any[],
+  dispatch?:any,
+  searchData?:any
+}
+export const Dashboard: React.FC<DashboardProps> = (props:any) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isViewMode, setIsViewMode] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<ITodo | null>();
@@ -46,9 +52,6 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   const handleClose = (data: any, action: string = "") => {
-    console.log("handleClose==>", data);
-    console.log("action==>", action);
-
     if (data?.id) {
       if (action === "add") {
         todos.push(data);
@@ -87,26 +90,25 @@ export const Dashboard: React.FC = () => {
       });
       console.log("searchData filteredData", filteredData);
       dispatch(setFilteredTodos(filteredData));
-    } else {
     }
   };
 
   //fill json data
-  const fillJson = () => {
-    let content =
-      "Happy Todo Listing! This is test content for Json todo list.";
-    for (let i = 0; i < 1200; i++) {
-      const todoData = {
-        id: i,
-        title: "Prepare Do" + i + "Test todo",
-        description: i + content.concat(content) + i,
-        completion_status: false,
-      };
-      addTodo(todoData).then((resp: any) => {
-        console.log(i);
-      });
-    }
-  };
+  // const fillJson = () => {
+  //   let content =
+  //     "Happy Todo Listing! This is test content for Json todo list.";
+  //   for (let i = 0; i < 1200; i++) {
+  //     const todoData = {
+  //       id: i,
+  //       title: "Prepare Do" + i + "Test todo",
+  //       description: i + content.concat(content) + i,
+  //       completion_status: false,
+  //     };
+  //     addTodo(todoData).then((resp: any) => {
+  //       console.log(i);
+  //     });
+  //   }
+  // };
 
   const viewDetails = (item: ITodo) => {
     setSelectedItem(item);
@@ -133,7 +135,7 @@ export const Dashboard: React.FC = () => {
         dispatch(setTodos(allItems));
         searchData(query);
       } else {
-        alert("Failed to Delete!");
+        console.log("Failed to Delete!");
       }
     });
   };
@@ -173,7 +175,7 @@ export const Dashboard: React.FC = () => {
 
   const renderLoader = () => {
     return (
-      <div className="my-4">
+      <div className="my-4" data-testid="loader">
         <div className="spinner-grow text-primary px-2 mx-2" role="status" />
         <div className="spinner-grow text-primary px-2 mx-2" role="status" />
         <div className="spinner-grow text-primary px-2 mx-2" role="status" />
@@ -185,9 +187,10 @@ export const Dashboard: React.FC = () => {
 
   const renderTodos = () => {
     return currentTodos?.map((item: any, index: any) => {
+      let id = "todo";
       return (
-        <div className="col-6 col-md-4 text-white p-2 ">
-          <div className="text-dark item-container m-2 rounded-2 p-2">
+        <div className="col-6 col-md-4 text-white p-2 " data-testid={id} >
+          <div className="text-dark item-container m-2 rounded-2 p-2" data-testid="todo-item">
             <div className="text-container ">
               <h3>{item.title}</h3>
             </div>
@@ -198,25 +201,27 @@ export const Dashboard: React.FC = () => {
               <div className="d-flex justify-content-between">
                 <div>
                   <span className="d-flex flex-row">
-                  <input
-                    checked={item.completion_status}
-                    onChange={(e) => setChecked(item, e.target.checked)}
-                    type="checkbox"
-                    className="form-check-input mx-2 p-2 border-2 icon-container border border-warning"
-                  ></input>
-                  <p
-                    className={
-                      item.completion_status
-                        ? "text-white bg-success  px-1 rounded-2"
-                        : "bg-danger text-white px-1 rounded-2"
-                    }
-                  >
-                    {item.completion_status ? "Completed" : "Incomplete"}
-                  </p></span>
+                    <input
+                      checked={item.completion_status}
+                      onChange={(e) => setChecked(item, e.target.checked)}
+                      type="checkbox"
+                      className="form-check-input mx-2 p-2 border-2 icon-container border border-warning"
+                    ></input>
+                    <p
+                      className={
+                        item.completion_status
+                          ? "text-white bg-success  px-1 rounded-2"
+                          : "bg-danger text-white px-1 rounded-2"
+                      }
+                    >
+                      {item.completion_status ? "Completed" : "Incomplete"}
+                    </p>
+                  </span>
                 </div>
                 <div className="d-flex flex-row">
                   <span className="icon-container m-2">
                     <FontAwesomeIcon
+                      data-testid="view-details-button"
                       icon={faCircleInfo}
                       color="blue"
                       onClick={() => viewDetails(item)}
@@ -225,6 +230,7 @@ export const Dashboard: React.FC = () => {
                   </span>
                   <span className="icon-container m-2">
                     <FontAwesomeIcon
+                      data-testid="edit-button"
                       color="green"
                       size={"xl"}
                       icon={faPenToSquare}
@@ -233,6 +239,7 @@ export const Dashboard: React.FC = () => {
                   </span>
                   <span className="icon-container m-2">
                     <FontAwesomeIcon
+                     data-testid={item.id}
                       color="red"
                       size={"xl"}
                       icon={faTrashCan}
@@ -263,8 +270,8 @@ export const Dashboard: React.FC = () => {
           </button>
           <label className="m-2 text-white">Search- </label>
           <input
-          className="border-warning px-2 rounded-4"
-            style={{ height: 40, width: 300}}
+            className="border-warning px-2 rounded-4"
+            style={{ height: 40, width: 300 }}
             placeholder="Start typing.."
             onChange={(e) => {
               searchData(e.target.value);
@@ -276,11 +283,13 @@ export const Dashboard: React.FC = () => {
       {!currentTodos?.length && renderLoader()}
 
       <Pagination
+       data-testid="PaginationComponent"
         todosPerPage={todosPerPage}
         totalTodos={todos?.length}
         handlePagination={handlePaginate}
       />
       <CustomModal
+         data-testid="ChildComponent"
         isModalOpen={showModal}
         readOnly={isViewMode}
         selectedItem={selectedItem}

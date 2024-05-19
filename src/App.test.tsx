@@ -1,14 +1,18 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import { Dashboard } from "./Screens/dashboard/Dashboard";
 
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
-}));
 
-test('renders App', () => {
-  render(<App />);
- //const linkElement = screen.getByText(/Todos Dashboard/i);
-  //expect(linkElement).toBeInTheDocument();
+describe("App", () => {
+  it("renders Dashboard", () => {
+    render(<App />);
+    expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
+  });
+
+  it("renders the Dashboard component with the correct props", () => {
+    const { getByText } = render(<App />);
+    expect(getByText("Todos")).toBeInTheDocument();
+    expect(getByText("Completed")).toBeInTheDocument();
+  });
 });

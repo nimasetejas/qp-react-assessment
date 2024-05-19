@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { addTodo, updateTodo } from "../../helpers/TodoService";
-import './ModalStyles.scss'
+import "./ModalStyles.scss";
 
 const CustomModal = (props: any) => {
   const [id, setId] = useState("");
@@ -40,7 +40,7 @@ const CustomModal = (props: any) => {
     const todoData: any = getReqBody();
     addTodo(todoData).then((resp: any) => {
       resp?.id ? console.log("Saved Successfully!") : alert("Failed to save!");
-      props.handleClose(resp,'add');
+      props.handleClose(resp, "add");
     });
   };
 
@@ -49,17 +49,20 @@ const CustomModal = (props: any) => {
     console.log("updateDetails", id, title, description, checked);
     const todoData: any = getReqBody();
     todoData["id"] = id;
-    updateTodo(todoData).then((resp: any) => {
-      if(resp?.ok){
-        console.log("Updated Successfully!")  
-        props?.handleClose( todoData, 'update');
-
-      }else{
-        alert("Failed to Update!");
-        props?.handleClose();
-
-      }
-    });
+    updateTodo(todoData)
+      .then((resp: any) => {
+        if (resp?.ok) {
+          console.log("Updated Successfully!");
+          props?.handleClose(todoData, "update");
+        } else {
+          alert("Failed to Update!");
+          props?.handleClose();
+        }
+      })
+      .catch((error: any) => {
+        console.error("Error adding todo:", error);
+        props.handleClose();
+      });
   };
 
   if (props.isModalOpen !== true) {
@@ -69,15 +72,21 @@ const CustomModal = (props: any) => {
     <Modal show={props.isModalOpen} onHide={() => props.handleClose()}>
       <Modal.Header closeButton>
         <Modal.Title>
-          {props.readOnly ? 'Todo Details': props?.selectedItem ? "Modify Todo" : "Add details"}
+          {props.readOnly
+            ? "Todo Details"
+            : props?.selectedItem
+            ? "Modify Todo"
+            : "Add details"}
         </Modal.Title>
       </Modal.Header>
       {props.readOnly && (
         <div className="p-2 m-4 modal-container">
           <div className="py-2">
-            <h3 style={{textDecoration:'underline'}}>{props.selectedItem?.title}</h3>
+            <h3 style={{ textDecoration: "underline" }} data-testid="title">
+              {props.selectedItem?.title}
+            </h3>
           </div>
-          <span>{props.selectedItem?.description}</span>
+          <span data-testid="description">{props.selectedItem?.description}</span>
           <div></div>
         </div>
       )}

@@ -36,6 +36,7 @@ export const Pagination = (props: PaginationProps) => {
       <div className="p-2 m-1">
         {activePage > 1 && (
           <button
+            id="pagination-button"
             className="btn bg-danger text-white pagination-btn"
             style={{ color: "white" }}
             onClick={() => onPageChange("prev")}
@@ -54,6 +55,7 @@ export const Pagination = (props: PaginationProps) => {
       <div className="p-2 m-1">
         {activePage <= pageNumbers?.length && (
           <button
+            id="pagination-button"
             className="btn bg-danger text-white pagination-btn"
             style={{ color: "white" }}
             onClick={() => onPageChange("next")}

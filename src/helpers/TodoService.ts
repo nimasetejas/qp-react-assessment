@@ -20,7 +20,6 @@ export const addTodo = async (todoData: ITodo) => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify(todoData),
     });
-    //console.log("addTodo",await response.json());
     return await response.json();
   } catch (error: any) {
     console.log(error.message);

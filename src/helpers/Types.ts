@@ -1,7 +1,7 @@
 export interface ITodo {
     id?: number;
-    completion_status: boolean;
+    completion_status?: boolean;
     title: string;
-    description: string;
+    description?: string;
   }
   
